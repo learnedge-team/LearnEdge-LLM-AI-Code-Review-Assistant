@@ -1,4 +1,4 @@
-# AI Code Review Assistant 🤖✨
+# LearnEdge-LLM-AI-Code-Review-Assistant 🤖✨
 
 **Developed by Shreeyash Asati (ML Engineer)**
 
