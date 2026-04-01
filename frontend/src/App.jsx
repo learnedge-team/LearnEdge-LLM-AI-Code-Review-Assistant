@@ -4,8 +4,11 @@ import CodeReview from "./pages/CodeReview";
 import Modules from "./pages/Modules";
 import Topics from "./pages/Topics";
 import Quiz from "./pages/Quiz";
-import Login from "./pages/Login"; 
-import ProtectedRoute from "./components/ProtectedRoute"; 
+import Login from "./pages/Login";
+import PrepPlanner from "./pages/PrepPlanner";
+import Home from "./pages/Home";
+import ProtectedRoute from "./components/ProtectedRoute";
+
 
 import { useState, useEffect } from "react";
 
@@ -40,7 +43,10 @@ function App() {
       <Routes>
 
         {/* 🔐 PUBLIC ROUTE */}
-        <Route path="/" element={<Login />} />
+        //Landing page
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/prep-planner" element={<PrepPlanner />} />
 
         {/* 🔐 PROTECTED ROUTES */}
         <Route

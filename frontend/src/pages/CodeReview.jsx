@@ -6,22 +6,29 @@ import Editor from "@monaco-editor/react";
 
 export default function CodeReview({ xp, setXp, level, setLevel, calculateLevel, setStreak }) {
 
-    const updateScoreBackend = async (points) => {
-  try {
-    const token = localStorage.getItem("token");
 
-    await fetch("http://localhost:5000/api/leaderboard/update-score", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token,
-      },
-      body: JSON.stringify({ points }),
-    });
-  } catch (err) {
-    console.error("Score sync failed:", err);
-  }
-};
+    const updateScoreBackend = async (points) => {
+        try {
+            const token = localStorage.getItem("token");
+
+            // 🔐 (very important)
+            if (!token) {
+                console.warn("No token found, skipping score update");
+                return;
+            }
+
+            await fetch("http://localhost:5000/api/leaderboard/update-score", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token,
+                },
+                body: JSON.stringify({ points }),
+            });
+        } catch (err) {
+            console.error("Score sync failed:", err);
+        }
+    };
 
 
     const [code, setCode] = useState("");
@@ -147,7 +154,7 @@ export default function CodeReview({ xp, setXp, level, setLevel, calculateLevel,
             return;
         }
 
-        // "https://learnedge-ai-code-review-assistant-final.onrender.com/api/v1/review-code"
+        const user = JSON.parse(localStorage.getItem("user"));
 
         try {
             const response = await fetch(
@@ -158,9 +165,9 @@ export default function CodeReview({ xp, setXp, level, setLevel, calculateLevel,
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        code,
-                        problem,
-                        output,
+                        question_name: problem || "Unknown Problem",
+                        student_id: user?.email || user?._id || "Unknown Student",
+                        student_solution: code || "No solution provided",
                     }),
                 }
             );
@@ -184,39 +191,36 @@ export default function CodeReview({ xp, setXp, level, setLevel, calculateLevel,
                 earnedXp = 10; // fallback
             }
 
-            await updateScoreBackend(earnedXp);
+
 
             // 🔥 Apply XP
-            // 🔥 Calculate first
+            const newXp = xp + earnedXp;
+            const newLevel = calculateLevel(newXp);
 
-           // 🔥 Apply XP
-const newXp = xp + earnedXp;
-const newLevel = calculateLevel(newXp);
+            // 🎉 Level up check
+            if (newLevel > level) {
+                setShowLevelUp(true);
+                setPingoState("happy");
+            }
 
-// 🎉 Level up check
-if (newLevel > level) {
-    setShowLevelUp(true);
-    setPingoState("happy");
-}
+            // ✅ Update frontend
+            setXp(newXp);
+            setLevel(newLevel);
 
-// ✅ Update frontend
-setXp(newXp);
-setLevel(newLevel);
-
-// 🔥 UPDATE BACKEND SCORE
-await updateScoreBackend(earnedXp);
+            // 🔥 UPDATE BACKEND SCORE
+            await updateScoreBackend(earnedXp);
 
 
 
-        //Feadback Message
-           setFeedback({
-  message: `🎉 You earned +${earnedXp} XP!`,
-  explanation: data.explanation,
-  hint: data.hint,
-  issues: data.issues,
-  fixed_code: data.fixed_code,
-  suggestion: data.suggestion
-});
+            //Feadback Message
+            setFeedback({
+                message: `🎉 You earned +${earnedXp} XP!`,
+                explanation: data.explanation,
+                hint: data.hint,
+                issues: data.issues,
+                fixed_code: data.fixed_code,
+                suggestion: data.suggestion
+            });
 
             setPingoState("happy"); // 🎉 success
 
@@ -382,7 +386,8 @@ await updateScoreBackend(earnedXp);
 
                 <button
                     onClick={handleReview}
-                    className="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg"
+                    disabled={loading}
+                    className="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg disabled:opacity-50"
                 >
                     🧠 Review Code
                 </button>
@@ -453,7 +458,7 @@ await updateScoreBackend(earnedXp);
                         </h2>
 
                         <p className="text-lg text-white">
-                            You reached Level {level} 🚀
+                            You reached Level {calculateLevel(xp)} 🚀
                         </p>
 
                     </div>
