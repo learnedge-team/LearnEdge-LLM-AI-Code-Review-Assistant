@@ -19,17 +19,28 @@
 }
 
 
+/* 🫁 Breathing animation */
 @keyframes breathe {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
 }
 
 .animate-breathe {
-  animation: breathe 2.5s ease-in-out infinite;
+  animation: breathe 3s ease-in-out infinite;
+}
+
+/* 🎞️ Horizontal scroll */
+@keyframes scrollX {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scrollX {
+  animation: scrollX 50s linear infinite;
 }
 
 @keyframes scaleUp {
@@ -45,4 +56,162 @@
 
 .animate-scaleUp {
   animation: scaleUp 0.4s ease-out;
+}
+
+/* XP floating animation */
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px);
+  }
+}
+
+.animate-floatUp {
+  animation: floatUp 1.5s ease-out;
+}
+
+/* ⭐ STAR LAYERS (FIXED + VISIBLE) */
+.stars, .stars2, .stars3 {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-repeat: repeat;
+  pointer-events: none;
+}
+
+/* Small stars */
+.stars {
+  background-image:
+    radial-gradient(4px 4px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 80% 70%, white, transparent),
+    radial-gradient(4px 4px at 50% 50%, white, transparent),
+    radial-gradient(2px 2px at 50% 50%, white, transparent),
+    radial-gradient(2px 2px at 50% 50%, white, transparent),
+    radial-gradient(2px 2px at 50% 50%, white, transparent),
+    radial-gradient(2px 2px at 50% 50%, white, transparent),
+    radial-gradient(4px 4px at 50% 50%, white, transparent),
+    radial-gradient(2px 2px at 50% 50%, white, transparent),
+     radial-gradient(1px 1px at 15% 25%, white, transparent),
+    radial-gradient(1px 1px at 35% 75%, white, transparent),
+    radial-gradient(1px 1px at 65% 45%, white, transparent),
+    radial-gradient(4px 4px at 50% 50%, white, transparent),
+    radial-gradient(4px 4px at 50% 50%, white, transparent),
+    radial-gradient(4px 4px at 50% 50%, white, transparent),
+    radial-gradient(2px 2px at 50% 50%, white, transparent),
+     radial-gradient(1px 1px at 15% 25%, white, transparent),
+    radial-gradient(1px 1px at 35% 75%, white, transparent),
+    radial-gradient(1px 1px at 65% 45%, white, transparent),
+    radial-gradient(4px 4px at 50% 50%, white, transparent),
+    radial-gradient(2px 2px at 50% 50%, white, transparent),
+    radial-gradient(4px 4px at 10% 80%, white, transparent);
+  opacity: 0.6;
+  animation: moveStars 80s linear infinite;
+}
+
+/* Medium stars */
+.stars2 {
+  background-image:
+    radial-gradient(3px 3px at 30% 80%, #60a5fa, transparent),
+    radial-gradient(3px 3px at 70% 20%, #93c5fd, transparent);
+  opacity: 0.5;
+  animation: moveStars 120s linear infinite;
+}
+
+/* Glow stars */
+.stars3 {
+  background-image:
+    radial-gradient(4px 4px at 40% 60%, #ffffff, transparent);
+  opacity: 0.4;
+  animation: moveStars 160s linear infinite;
+}
+
+/* Movement */
+@keyframes moveStars {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-500px);
+  }
+}
+
+.shooting-stars span {
+  position: absolute;
+  width: 2px;
+  height: 80px;
+  background: linear-gradient(white, transparent);
+  opacity: 0.7;
+  animation: shoot 6s linear infinite;
+}
+
+/* Different positions + delays */
+.shooting-stars span:nth-child(1) {
+  top: 10%;
+  left: 80%;
+  animation-delay: 0s;
+}
+
+.shooting-stars span:nth-child(2) {
+  top: 20%;
+  left: 60%;
+  animation-delay: 2s;
+}
+
+.shooting-stars span:nth-child(3) {
+  top: 5%;
+  left: 30%;
+  animation-delay: 4s;
+}
+
+.shooting-stars span:nth-child(4) {
+  top: 15%;
+  left: 90%;
+  animation-delay: 1s;
+}
+
+.shooting-stars span:nth-child(5) {
+  top: 25%;
+  left: 50%;
+  animation-delay: 3s;
+}
+
+.shooting-stars span:nth-child(6) {
+  top: 8%;
+  left: 70%;
+  animation-delay: 5s;
+}
+
+@keyframes shoot {
+  0% {
+    transform: translate(0, 0) rotate(45deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-300px, 600px) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+.card-shine::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.1), transparent);
+  opacity: 0;
+  transition: 0.5s;
+}
+
+.card-shine:hover::before {
+  opacity: 1;
 }
