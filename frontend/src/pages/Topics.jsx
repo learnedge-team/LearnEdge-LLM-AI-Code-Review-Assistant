@@ -22,7 +22,6 @@ export default function Topics() {
         📖 {domain} - {level}
       </h1>
 
-      {/* Topics List */}
       <div className="mb-6">
         {topics.map((topic, i) => (
           <div
@@ -35,7 +34,6 @@ export default function Topics() {
         ))}
       </div>
 
-      {/* Topic Content */}
       {selectedTopic && (
         <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
 
@@ -48,7 +46,6 @@ export default function Topics() {
             add examples, and guide the student.
           </p>
 
-          {/* 🎯 QUIZ BUTTON */}
           <button
             onClick={() => navigate("/quiz")}
             className="bg-purple-500 px-4 py-2 rounded hover:bg-purple-600"

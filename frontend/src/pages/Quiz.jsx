@@ -15,7 +15,6 @@ export default function Quiz({ setXp }) {
   const [showHint, setShowHint] = useState("");
   const [levelUp, setLevelUp] = useState(false);
 
-  // ⏱️ TIMER
   useEffect(() => {
     if (time <= 0) {
       setShowResult(true);
@@ -29,12 +28,11 @@ export default function Quiz({ setXp }) {
     return () => clearInterval(timer);
   }, [time]);
 
-  // 🧠 BACKEND SYNC
   const updateScoreBackend = async (points) => {
     try {
       const token = localStorage.getItem("token");
 
-      await fetch("http://localhost:5000/api/leaderboard/update-score", {
+      await fetch("https://learnedge-backend-raxx.onrender.com/api/leaderboard/update-score", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,14 +45,12 @@ export default function Quiz({ setXp }) {
     }
   };
 
-  // 🧠 HANDLE ANSWER
   const handleAnswer = (option) => {
     const newAnswers = [...answers];
     newAnswers[current] = option;
     setAnswers(newAnswers);
   };
 
-  // 👉 NEXT
   const nextQuestion = () => {
     if (current < quiz.length - 1) {
       setCurrent(current + 1);
@@ -64,20 +60,17 @@ export default function Quiz({ setXp }) {
     }
   };
 
-  // 📊 CALCULATIONS
   const correct = quiz.filter(
     (q, i) => q.answer === answers[i]
   ).length;
 
   const earnedXP = correct * 5;
 
-  // 🎮 XP + LEVEL EFFECT
   useEffect(() => {
     if (showResult && quiz.length > 0) {
       setXp((prev) => {
         const newXp = prev + earnedXP;
 
-        // trigger level up animation if crosses 100 boundary
         if (Math.floor(prev / 100) < Math.floor(newXp / 100)) {
           setLevelUp(true);
           setTimeout(() => setLevelUp(false), 3000);
@@ -90,15 +83,12 @@ export default function Quiz({ setXp }) {
     }
   }, [showResult]);
 
-  // 📊 RESULT SCREEN
   if (showResult) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-900 text-white relative">
 
-        {/* 🎉 Confetti */}
         <Confetti />
 
-        {/* 🎮 Level Up Animation */}
         {levelUp && (
           <div className="absolute top-20 text-3xl font-bold text-yellow-400 animate-bounce">
             🎮 LEVEL UP!
@@ -126,115 +116,109 @@ export default function Quiz({ setXp }) {
     );
   }
 
- return (
-  <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center px-6">
+  return (
+    <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center px-6">
 
-    {/* MAIN CARD */}
-    <div className="w-full max-w-3xl bg-slate-800/70 backdrop-blur-xl p-8 rounded-2xl 
-                    shadow-[0_0_40px_rgba(59,130,246,0.2)]">
+      <div className="w-full max-w-3xl bg-slate-800/70 backdrop-blur-xl p-8 rounded-2xl 
+      shadow-[0_0_40px_rgba(59,130,246,0.2)]">
 
-      {/* ⏱️ TIMER + PROGRESS */}
-      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-8">
 
-        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3">
 
-          <div className="w-12 h-12 rounded-full border-4 border-blue-400 
-                          flex items-center justify-center 
-                          animate-pulse
-                          shadow-[0_0_20px_rgba(59,130,246,0.6)]">
-            ⏱️
+            <div className="w-12 h-12 rounded-full border-4 border-blue-400 
+            flex items-center justify-center 
+            animate-pulse
+            shadow-[0_0_20px_rgba(59,130,246,0.6)]">
+              ⏱️
+            </div>
+
+            <p className="text-lg font-semibold tracking-wide">
+              {Math.floor(time / 60)}:
+              {String(time % 60).padStart(2, "0")}
+            </p>
           </div>
 
-          <p className="text-lg font-semibold tracking-wide">
-            {Math.floor(time / 60)}:
-            {String(time % 60).padStart(2, "0")}
-          </p>
+          <div className="w-48 bg-gray-700 h-2 rounded overflow-hidden">
+            <div
+              className="bg-green-400 h-2 rounded transition-all duration-500 
+              shadow-[0_0_10px_rgba(34,197,94,0.7)]"
+              style={{
+                width: `${((current + 1) / quiz.length) * 100}%`,
+              }}
+            ></div>
+          </div>
+
         </div>
 
-        {/* 📊 PROGRESS BAR */}
-        <div className="w-48 bg-gray-700 h-2 rounded overflow-hidden">
-          <div
-            className="bg-green-400 h-2 rounded transition-all duration-500 
-                       shadow-[0_0_10px_rgba(34,197,94,0.7)]"
-            style={{
-              width: `${((current + 1) / quiz.length) * 100}%`,
-            }}
-          ></div>
-        </div>
+        <h2 className="text-xl mb-6 font-semibold
+        transition-all duration-300
+        hover:scale-[1.02]
+        hover:drop-shadow-[0_0_15px_rgba(96,165,250,0.6)]">
+          Q{current + 1}. {quiz[current]?.q}
+        </h2>
 
-      </div>
-
-      {/* QUESTION */}
-      <h2 className="text-xl mb-6 font-semibold
-                     transition-all duration-300
-                     hover:scale-[1.02]
-                     hover:drop-shadow-[0_0_15px_rgba(96,165,250,0.6)]">
-        Q{current + 1}. {quiz[current]?.q}
-      </h2>
-
-      {/* OPTIONS */}
-      <div className="space-y-3">
-        {quiz[current]?.options.map((opt, i) => (
-          <button
-            key={i}
-            onClick={() => handleAnswer(opt)}
-            className={`block w-full text-left p-4 rounded-lg border transition-all duration-300
+        <div className="space-y-3">
+          {quiz[current]?.options.map((opt, i) => (
+            <button
+              key={i}
+              onClick={() => handleAnswer(opt)}
+              className={`block w-full text-left p-4 rounded-lg border transition-all duration-300
               ${
                 answers[current] === opt
                   ? "bg-blue-500 border-blue-300 shadow-[0_0_20px_rgba(59,130,246,0.7)] scale-[1.02]"
                   : "bg-slate-800 border-slate-700 hover:border-blue-400 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] hover:scale-[1.02]"
               }`}
-          >
-            {opt}
-          </button>
-        ))}
-      </div>
-
-      {/* 🐧 HINT */}
-      <button
-        onClick={() => {
-          const hints = [
-            "💡 Think about basics!",
-            "🧠 Eliminate wrong options!",
-            "⚡ Recall concepts!",
-            "📚 You saw this in notes!",
-          ];
-          const random =
-            hints[Math.floor(Math.random() * hints.length)];
-          setShowHint(random);
-        }}
-        className="mt-6 px-5 py-2 rounded-lg
-                   bg-purple-500 transition-all duration-300
-                   border border-transparent
-                   hover:border-purple-300
-                   hover:shadow-[0_0_25px_rgba(168,85,247,0.8)]
-                   hover:scale-105
-                   active:scale-95"
-      >
-        🐧 Hint
-      </button>
-
-      {showHint && (
-        <div className="mt-4 bg-white text-black px-4 py-2 rounded-lg shadow-lg 
-                        animate-fadeIn">
-          {showHint}
+            >
+              {opt}
+            </button>
+          ))}
         </div>
-      )}
 
-      {/* NEXT BUTTON */}
-      <button
-        onClick={nextQuestion}
-        className="mt-8 w-full px-6 py-3 rounded-lg
-                   bg-green-500 transition-all duration-300
-                   border border-transparent
-                   hover:border-green-300
-                   hover:shadow-[0_0_30px_rgba(34,197,94,0.9)]
-                   hover:scale-105
-                   active:scale-95"
-      >
-        {current === quiz.length - 1 ? "Finish" : "Next"}
-      </button>
+        <button
+          onClick={() => {
+            const hints = [
+              "💡 Think about basics!",
+              "🧠 Eliminate wrong options!",
+              "⚡ Recall concepts!",
+              "📚 You saw this in notes!",
+            ];
+            const random =
+              hints[Math.floor(Math.random() * hints.length)];
+            setShowHint(random);
+          }}
+          className="mt-6 px-5 py-2 rounded-lg
+          bg-purple-500 transition-all duration-300
+          border border-transparent
+          hover:border-purple-300
+          hover:shadow-[0_0_25px_rgba(168,85,247,0.8)]
+          hover:scale-105
+          active:scale-95"
+        >
+          🐧 Hint
+        </button>
 
+        {showHint && (
+          <div className="mt-4 bg-white text-black px-4 py-2 rounded-lg shadow-lg 
+          animate-fadeIn">
+            {showHint}
+          </div>
+        )}
+
+        <button
+          onClick={nextQuestion}
+          className="mt-8 w-full px-6 py-3 rounded-lg
+          bg-green-500 transition-all duration-300
+          border border-transparent
+          hover:border-green-300
+          hover:shadow-[0_0_30px_rgba(34,197,94,0.9)]
+          hover:scale-105
+          active:scale-95"
+        >
+          {current === quiz.length - 1 ? "Finish" : "Next"}
+        </button>
+
+      </div>
     </div>
-  </div>
-);}
+  );
+}

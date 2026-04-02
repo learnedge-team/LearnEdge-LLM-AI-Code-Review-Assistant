@@ -3,13 +3,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 
-import logo from "../assets/companyLogo.png";
-import dsaLogo from "../assets/dsa.png";
-import webLogo from "../assets/web.png";
-import mlLogo from "../assets/Ml.png";
-import agriLogo from "../assets/AgriNova.jpeg";
-import pingo from "../assets/pingo-idle.png";
-
 export default function Dashboard({ xp, level }) {
   const navigate = useNavigate();
 
@@ -17,23 +10,19 @@ export default function Dashboard({ xp, level }) {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
-  // 🐧 AI States
   const [pingoMessage, setPingoMessage] = useState("");
   const [displayedMessage, setDisplayedMessage] = useState("");
   const [showBubble, setShowBubble] = useState(false);
 
-
-  // 🎮 XP Animation
   const [showXpFloat, setShowXpFloat] = useState(false);
 
   const domains = [
-    { name: "DSA", route: "/code", logo: dsaLogo },
-    { name: "Web Dev", route: "/modules", logo: webLogo },
-    { name: "Machine Learning", route: "/modules", logo: mlLogo },
-    { name: "AgriNova", route: "/modules", logo: agriLogo },
+    { name: "DSA", route: "/code", logo: "/dsa.png" },
+    { name: "Web Dev", route: "/modules", logo: "/web.png" },
+    { name: "Machine Learning", route: "/modules", logo: "/Ml.png" },
+    { name: "AgriNova", route: "/modules", logo: "/AgriNova.jpeg" },
   ];
 
-  // 🧠 Leaderboard fetch
   useEffect(() => {
     const handleClickOutside = () => setShowDropdown(false);
 
@@ -44,14 +33,13 @@ export default function Dashboard({ xp, level }) {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/leaderboard")
+      .get("https://learnedge-backend-raxx.onrender.com/api/leaderboard")
       .then((res) => setLeaders(res.data))
       .catch(console.error);
   }, []);
 
-  // ⚡ Socket
   useEffect(() => {
-    const socket = io("http://localhost:5000");
+    const socket = io("https://learnedge-backend-raxx.onrender.com");
 
     socket.on("leaderboardUpdate", (data) => {
       setLeaders(data);
@@ -60,7 +48,6 @@ export default function Dashboard({ xp, level }) {
     return () => socket.disconnect();
   }, []);
 
-  // 🧠 Pingo message based on XP
   useEffect(() => {
     let message = "";
 
@@ -81,12 +68,11 @@ export default function Dashboard({ xp, level }) {
 
     const timer = setTimeout(() => {
       setShowBubble(false);
-    }, 5000); // ⏱️ 5 seconds
+    }, 5000);
 
     return () => clearTimeout(timer);
   }, [pingoMessage]);
 
-  // ⌨️ Typing effect
   useEffect(() => {
     if (!pingoMessage) return;
 
@@ -104,7 +90,6 @@ export default function Dashboard({ xp, level }) {
     return () => clearInterval(interval);
   }, [pingoMessage]);
 
-  // 🎮 XP floating animation
   useEffect(() => {
     if (xp > 0) {
       setShowXpFloat(true);
@@ -121,7 +106,6 @@ export default function Dashboard({ xp, level }) {
   return (
     <div className="min-h-screen bg-slate-900 text-white p-6 relative overflow-hidden">
 
-      {/* ⭐ STARS */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="stars"></div>
         <div className="stars opacity-40"></div>
@@ -129,44 +113,37 @@ export default function Dashboard({ xp, level }) {
         <div className="stars3"></div>
       </div>
 
-      {/* 🌠 SHOOTING STARS */}
       <div className="shooting-stars absolute inset-0 z-0 pointer-events-none">
         <span></span><span></span><span></span>
         <span></span><span></span><span></span>
       </div>
 
-      {/* ✨ CURSOR GLOW */}
       <div
         id="cursor-glow"
         className="pointer-events-none fixed w-40 h-40 rounded-full blur-3xl opacity-20 bg-blue-400 z-0"
       ></div>
 
-      {/* 🌈 GRADIENT */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-900/40 to-slate-900 z-0"></div>
 
-      {/* CONTENT */}
       <div className="relative z-10">
 
-        {/* 🎮 XP FLOAT */}
         {showXpFloat && (
           <div className="fixed top-20 right-10 text-yellow-400 font-bold text-xl animate-floatUp z-50">
             +XP 🎉
           </div>
         )}
 
-        {/* HEADER */}
         <div className="mb-6">
 
           <div className="flex items-center justify-between flex-wrap gap-4">
 
             <div className="flex items-center gap-3">
-              <img src={logo} className="w-12 h-12 drop-shadow-[0_0_10px_rgba(59,130,246,0.6)]" />
+              <img src="/companyLogo.png" className="w-12 h-12 drop-shadow-[0_0_10px_rgba(59,130,246,0.6)]" />
               <h1 className="text-3xl font-bold transition hover:scale-105 hover:drop-shadow-[0_0_20px_rgba(96,165,250,0.8)]">
                 LearnEdge Dashboard
               </h1>
             </div>
 
-            {/* PROFILE */}
             <div className="relative">
               <button
                 onClick={(e) => {
@@ -174,9 +151,9 @@ export default function Dashboard({ xp, level }) {
                   setShowDropdown(!showDropdown);
                 }}
                 className="bg-slate-800 px-4 py-2 rounded-lg border border-slate-700
-                         transition-all duration-300
-                         hover:border-blue-400
-                         hover:shadow-[0_0_20px_rgba(59,130,246,0.6)]"
+                transition-all duration-300
+                hover:border-blue-400
+                hover:shadow-[0_0_20px_rgba(59,130,246,0.6)]"
               >
                 👤 Profile
               </button>
@@ -189,7 +166,7 @@ export default function Dashboard({ xp, level }) {
                   <button
                     onClick={handleLogout}
                     className="w-full text-left px-4 py-2 rounded-lg
-                             hover:bg-red-500 hover:text-white transition"
+                    hover:bg-red-500 hover:text-white transition"
                   >
                     🚪 Logout
                   </button>
@@ -199,10 +176,9 @@ export default function Dashboard({ xp, level }) {
 
           </div>
 
-          {/* XP CARD */}
           <div className="mt-4 flex justify-end">
             <div className="bg-slate-800/70 backdrop-blur-lg px-4 py-3 rounded-xl border border-slate-700 
-                          shadow-[0_0_25px_rgba(234,179,8,0.3)] w-full max-w-xs">
+            shadow-[0_0_25px_rgba(234,179,8,0.3)] w-full max-w-xs">
 
               <p className="text-xs text-gray-400">Level {level}</p>
 
@@ -213,7 +189,7 @@ export default function Dashboard({ xp, level }) {
               <div className="w-full bg-gray-700 h-2 rounded mt-2">
                 <div
                   className="bg-gradient-to-r from-yellow-400 to-orange-500 h-2 rounded 
-                           shadow-[0_0_10px_rgba(234,179,8,0.7)]"
+                  shadow-[0_0_10px_rgba(234,179,8,0.7)]"
                   style={{ width: `${xp % 100}%` }}
                 ></div>
               </div>
@@ -223,12 +199,10 @@ export default function Dashboard({ xp, level }) {
 
         </div>
 
-        {/* GREETING */}
         <h2 className="text-lg text-gray-400 mb-6">
           Welcome back! Keep leveling up!
         </h2>
 
-        {/* DOMAINS */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
 
           {domains.map((domain, i) => (
@@ -260,7 +234,6 @@ export default function Dashboard({ xp, level }) {
 
         </div>
 
-        {/* LEADERBOARD */}
         <div className="mt-10">
           <h2 className="text-xl font-bold mb-4">🏆 Leaderboard</h2>
 
@@ -285,43 +258,37 @@ export default function Dashboard({ xp, level }) {
           </div>
         </div>
 
-        {/* 🐧 PINGO */}
         <div className="fixed bottom-6 right-6 flex flex-col items-end z-50">
 
-          {/* Bubble */}
           <div className="mb-2 mr-2 max-w-[180px]">
             <div
               className={`bg-white text-black text-xs px-3 py-2 rounded-xl shadow-lg 
-            transition-all duration-500 
-            ${showBubble ? "opacity-100" : "opacity-0"}`}
+              transition-all duration-500 
+              ${showBubble ? "opacity-100" : "opacity-0"}`}
             >
               <p>{displayedMessage}</p>
             </div>
           </div>
 
-          {/* Mascot */}
           <div className="relative">
 
             <div className="absolute inset-0 rounded-full bg-cyan-400 blur-3xl opacity-40 animate-pulse"></div>
             <div className="absolute inset-0 rounded-full border border-cyan-300 opacity-60"></div>
 
             <img
-              src={pingo}
+              src="/pingo-idle.png"
               alt="Pingo"
               className="relative w-20 md:w-24 animate-breathe cursor-pointer z-10 
-             transition hover:scale-110"
-
+              transition hover:scale-110"
               onMouseEnter={() => {
                 setDisplayedMessage("😏 Ohh do you want a planner? Click me!");
                 setShowBubble(true);
               }}
-
               onMouseLeave={() => {
                 setShowBubble(false);
               }}
-
               onClick={() => {
-                navigate("/prep-planner"); // 🚀 OPEN PLANNER
+                navigate("/prep-planner");
               }}
             />
           </div>

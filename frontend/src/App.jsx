@@ -9,7 +9,6 @@ import PrepPlanner from "./pages/PrepPlanner";
 import Home from "./pages/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
 
-
 import { useState, useEffect } from "react";
 
 function App() {
@@ -41,9 +40,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-
-        {/* 🔐 PUBLIC ROUTE */}
-        //Landing page
+        {/* 🔐 PUBLIC ROUTES */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/prep-planner" element={<PrepPlanner />} />
@@ -100,7 +97,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
       </Routes>
     </BrowserRouter>
   );
