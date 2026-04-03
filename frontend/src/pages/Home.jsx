@@ -71,7 +71,11 @@ export default function Home() {
         transition-all duration-500 ease-out 
         hover:scale-110 
         hover:drop-shadow-[0_0_35px_rgba(96,165,250,1)]">
-          PingO <span className="text-blue-400">AI</span> 🚀
+          PingO <span className="text-blue-400">AI</span>
+          <img
+            src="/rocket.png"
+            className="inline-block w-16 ml-2 animate-breathe"
+          />
         </h1>
 
         <p className="text-gray-400 max-w-xl mb-10 text-lg leading-relaxed">
@@ -142,7 +146,11 @@ export default function Home() {
         <h2 className="text-2xl font-semibold mb-6
         transition-all duration-300
         hover:drop-shadow-[0_0_20px_rgba(96,165,250,0.7)]">
-          Start your journey today 
+          Start your journey today
+          <img
+            src="/rocket.png"
+            className="inline-block w-7 ml-2 animate-bounce"
+          />
         </h2>
 
         <button
